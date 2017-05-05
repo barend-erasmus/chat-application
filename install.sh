@@ -47,4 +47,4 @@ docker build --no-cache -t chat-application ./
 docker stop chat-application
 
 # Run docker as deamon
-docker run -d -p 80:3000 --name chat-application --link chat-application-db:mongo -t chat-application
+docker run -d -p 80:3000 -p 8001:8001 --name chat-application --link chat-application-db:mongo -t chat-application
