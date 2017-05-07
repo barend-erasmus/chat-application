@@ -2,6 +2,7 @@
 import * as express from 'express';
 import * as io from 'socket.io';
 import * as uuid from 'uuid';
+import * as http from 'http';
 
 // Imports services
 import { MessageService } from './services/message';
@@ -9,9 +10,9 @@ import { MessageService } from './services/message';
 // Import configurations
 import { config } from './config';
 
-const socketio = io.listen(8001);
-
 const app = express();
+const server = http.createServer(app);
+let socketio;
 
 app.get('/', (req, res) => {
   const id = uuid.v4();
@@ -26,7 +27,7 @@ app.get('/chat', (req, res) => {
   res.sendFile(__dirname + '/public/index.html');
 });
 
-app.listen(3000);
+socketio = io.listen(app.listen(3000));
 
 function createNewNamespace(id: string) {
 
