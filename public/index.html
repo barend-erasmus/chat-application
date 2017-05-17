@@ -54,9 +54,17 @@
 
         <div class="starter-template">
             <div class="well">
-                <div class="row">
+                <div class="row" id="form-join">
                     <div class="col-md-8">
-                        <input type="text" class="form-control" id="txt-message" />
+                        <input type="text" class="form-control" id="txt-username" placeholder="Enter your username here"/>
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-primary form-control" id="btn-join">Join</button>
+                    </div>
+                </div>
+                <div class="row hidden" id="form-send">
+                    <div class="col-md-8">
+                        <input type="text" class="form-control" id="txt-message" placeholder="Enter your message here" />
                     </div>
                     <div class="col-md-4">
                         <button class="btn btn-primary form-control" id="btn-send">Send</button>
@@ -74,23 +82,29 @@
 
 </body>
 <script>
-    var socket = io.connect(`/id-${getParameterByName('id')}`);
-
-    socket.on('message', function (data) {
-        $('div.starter-template ul.list-group').prepend(`<li class="list-group-item">${data.text}</li>`);
-    });
-
- 
+    let socket = io.connect(`/id-${getParameterByName('id')}`);
+    
     $('#btn-send').click(function () {
         socket.emit('message', {
-            text: $('#txt-message').val()
+            text: $('#txt-message').val(),
+            username: $('#txt-username').val()
         });
         $('#txt-message').val('');
     });
 
+    $('#btn-join').click(function () {
+        $('#form-join').addClass('hidden');
+        $('#form-send').removeClass('hidden');
+    });
+
+    socket.on('message', function (data) {
+        $('div.starter-template ul.list-group').prepend(`<li class="list-group-item"><b>${data.username}</b>&nbsp;&nbsp;${data.text}</li>`);
+    });
+
+ 
     socket.on('history', function(data) {
         for (let i = 0; i < data.length; i ++) {
-            $('div.starter-template ul.list-group').prepend(`<li class="list-group-item">${data[i].text}</li>`);
+            $('div.starter-template ul.list-group').prepend(`<li class="list-group-item"><b>${data[i].username}</b>&nbsp;&nbsp;${data[i].text}</li>`);
         }
     });
 
