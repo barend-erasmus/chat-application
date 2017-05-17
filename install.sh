@@ -2,6 +2,7 @@
 
 # Declare varibles
 domain=$1
+port=$2
 
 # Update machine package indexes
 sudo apt-get update
@@ -42,8 +43,5 @@ npm run build
 # Build docker image
 docker build --no-cache -t chat-application ./
 
-# Stop docker container
-docker stop chat-application
-
 # Run docker as deamon
-docker run -d -p 80:3000 --name chat-application --link chat-application-db:mongo -t chat-application
+docker run -d -p "$port":3000 --name chat-application --link chat-application-db:mongo -t chat-application
