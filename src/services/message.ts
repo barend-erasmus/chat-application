@@ -24,7 +24,7 @@ export class MessageService {
 
             const result: any = yield collection.insertOne({
                 id: message.id,
-                username: message.username, 
+                username: message.username,
                 text: message.text,
                 timestamp: message.timestamp
             });
@@ -47,7 +47,8 @@ export class MessageService {
                 id: id,
             }).sort({
                 timestamp: 1
-            }).toArray();
+            }).limit(50)
+                .toArray();
 
             db.close();
 

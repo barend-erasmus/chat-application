@@ -15,6 +15,8 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+
     <style>
         body {
             padding-top: 50px;
@@ -98,13 +100,15 @@
     });
 
     socket.on('message', function (data) {
-        $('div.starter-template ul.list-group').prepend(`<li class="list-group-item"><b>${data.username}</b>&nbsp;&nbsp;${data.text}</li>`);
+        let txtTimestamp = moment(data.timestamp).format('MMMM Do YYYY, HH:mm:ss');
+        $('div.starter-template ul.list-group').prepend(`<li class="list-group-item"><b>${data.username}</b>&nbsp;&nbsp;${data.text}<br />${txtTimestamp}</li>`);
     });
 
  
     socket.on('history', function(data) {
         for (let i = 0; i < data.length; i ++) {
-            $('div.starter-template ul.list-group').prepend(`<li class="list-group-item"><b>${data[i].username}</b>&nbsp;&nbsp;${data[i].text}</li>`);
+            let txtTimestamp = moment(data[i].timestamp).format('MMMM Do YYYY, HH:mm:ss');
+            $('div.starter-template ul.list-group').prepend(`<li class="list-group-item"><b>${data[i].username}</b>&nbsp;&nbsp;${data[i].text}<br />${txtTimestamp}</li>`);
         }
     });
 
