@@ -20,7 +20,7 @@ export class MessageService {
 
             const db: mongo.Db = yield mongo.MongoClient.connect(self.uri);
 
-            const collection: mongo.Collection = db.collection('features');
+            const collection: mongo.Collection = db.collection('messages');
 
             const result: any = yield collection.insertOne({
                 id: message.id,
@@ -41,7 +41,7 @@ export class MessageService {
         return co(function* () {
             const db: mongo.Db = yield mongo.MongoClient.connect(self.uri);
 
-            const collection: mongo.Collection = db.collection('features');
+            const collection: mongo.Collection = db.collection('messages');
 
             const messages: any[] = yield collection.find({
                 id: id,
