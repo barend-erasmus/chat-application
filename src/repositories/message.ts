@@ -1,3 +1,3 @@
-export interface MessageRepository {
-
+export interface IMessageRepository {
+    create(): any;
 }
