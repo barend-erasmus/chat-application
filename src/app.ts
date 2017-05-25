@@ -1,8 +1,8 @@
 // Imports
 import * as express from 'express';
+import * as http from 'http';
 import * as io from 'socket.io';
 import * as uuid from 'uuid';
-import * as http from 'http';
 
 // Imports services
 import { MessageService } from './services/message';

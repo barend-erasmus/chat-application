@@ -14,7 +14,7 @@ export class MessageService {
     public create(id: string, username: string, text: string): Promise<Message> {
         const self = this;
 
-        return co(function* () {
+        return co(function*() {
 
             const message = new Message(id, username, text, new Date().getTime());
 
@@ -24,9 +24,9 @@ export class MessageService {
 
             const result: any = yield collection.insertOne({
                 id: message.id,
-                username: message.username,
                 text: message.text,
-                timestamp: message.timestamp
+                timestamp: message.timestamp,
+                username: message.username,
             });
 
             db.close();
@@ -38,17 +38,14 @@ export class MessageService {
     public list(id: string): Promise<Message[]> {
         const self = this;
 
-        return co(function* () {
+        return co(function*() {
             const db: mongo.Db = yield mongo.MongoClient.connect(self.uri);
 
             const collection: mongo.Collection = db.collection('messages');
 
-            const messages: any[] = yield collection.find({
-                id: id,
-            }).sort({
-                timestamp: 1
-            }).limit(50)
-                .toArray();
+            const messages: any[] = yield collection.find({ id }).sort({
+                timestamp: 1,
+            }).limit(50).toArray();
 
             db.close();
 
