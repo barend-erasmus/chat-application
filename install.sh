@@ -20,7 +20,7 @@ npm install -g gulp
 
 # -- BUILD 'chat-application-db' project --
 
-docker run --name chat-application-db -v /opt/mongodb:/data/db -d mongo
+docker run --name chat-application-db -v /opt/chat-application/mongodb:/data/db -d mongo
 
 # -- BUILD 'chat-application' project --
 
