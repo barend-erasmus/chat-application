@@ -1,96 +1,172 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-    <title>Chat Application</title>
-
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-        crossorigin="anonymous"></script>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="http://www.portal.euromonitor.com/favicon.ico" type="image/ico">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
         crossorigin="anonymous">
-
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-        crossorigin="anonymous"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
-
     <style>
-        body {
-            padding-top: 50px;
+        body,
+        html {
+            height: 100%;
+            background-color: #e9eeef;
+            font-family: 'proxima-nova', sans-serif;
+            font-size: 14px;
+            letter-spacing: .02rem;
+            margin: 0;
         }
-        
-        .starter-template {
-            padding: 40px 15px;
+
+        header {
+            background-color: #fff;
+            border-bottom: 2px solid #007e9d;
+            position: fixed;
+            top: 0;
+            width: 100%;
+        }
+
+        header:after {
+            clear: both;
+            content: '';
+            display: table;
+        }
+
+        .site-width {
+            margin: 0 auto;
+            width: 550px;
+        }
+
+        .logo {
+            background: url("http://www.portal.euromonitor.com/portal/Content/images/em-passport-logo.png") no-repeat;
+            display: block;
+            float: left;
+            height: 50px;
+            margin-left: -20px;
+            width: 122px;
+        }
+
+        .title {
+            float: right;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: .03rem;
+            padding-top: 15px;
+        }
+
+        .main {
+            padding: 73px 0 28px 0;
+        }
+
+        .message-item {
+            background-color: #fff;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            padding: 14px 17px 15px 17px;
+        }
+
+        .message-item>span {
+            display: block;
+            line-height: 18px;
+        }
+
+        .message-title {
+            color: #777;
+            font-size: 12px;
+        }
+
+        .highlight-1 {
+            color: #ed7320;
+        }
+
+        .highlight-2 {
+            color: #007e9d;
+        }
+
+        strong {
+            font-weight: 500;
+        }
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            font-size: 12px;
             text-align: center;
+            letter-spacing: 0.05rem;
+            padding: 8px 0 6px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
         }
     </style>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <title>Euromonitor Chat Application</title>
 </head>
 
 <body>
-
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false"
-                    aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-                <a class="navbar-brand" href="#">Chat Application</a>
-            </div>
-            <div id="navbar" class="collapse navbar-collapse">
-                <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">Home</a></li>
-                </ul>
-            </div>
-            <!--/.nav-collapse -->
+    <header>
+        <div class="site-width">
+            <div class="logo"></div>
+            <div class="title">Chat Application</div>
         </div>
-    </nav>
+    </header>
 
-    <div class="container">
-
-        <div class="starter-template">
-            <div class="well">
-                <div class="row">
-                    <div class="col-md-8">
-                        <input type="text" class="form-control" id="txt-message" />
-                    </div>
-                    <div class="col-md-4">
-                        <button class="btn btn-primary form-control" id="btn-send">Send</button>
-                    </div>
+    <div class="main site-width">
+        <div class="well">
+            <div class="row" id="form-join">
+                <div class="col-md-8">
+                    <input type="text" class="form-control" id="txt-username" placeholder="Enter your username here" />
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-primary form-control" id="btn-join">Join</button>
                 </div>
             </div>
-
-            <ul class="list-group">
-
-            </ul>
+            <div class="row hidden" id="form-send">
+                <div class="col-md-8">
+                    <input type="text" class="form-control" id="txt-message" placeholder="Enter your message here" />
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-primary form-control" id="btn-send">Send</button>
+                </div>
+            </div>
         </div>
+        <div class="list-group">
 
+        </div>
     </div>
-    <!-- /.container -->
 
+    <footer>&copy; 2017 Euromonitor International</footer>
 </body>
 <script>
-    var socket = io.connect(`/id-${getParameterByName('id')}`);
+    let socket = io.connect(`/id-${getParameterByName('id')}`);
 
-    socket.on('message', function (data) {
-        $('div.starter-template ul.list-group').prepend(`<li class="list-group-item">${data.text}</li>`);
-    });
-
- 
     $('#btn-send').click(function () {
         socket.emit('message', {
-            text: $('#txt-message').val()
+            text: $('#txt-message').val(),
+            username: $('#txt-username').val()
         });
         $('#txt-message').val('');
     });
 
-    socket.on('history', function(data) {
-        for (let i = 0; i < data.length; i ++) {
-            $('div.starter-template ul.list-group').prepend(`<li class="list-group-item">${data[i].text}</li>`);
+    $('#btn-join').click(function () {
+        $('#form-join').addClass('hidden');
+        $('#form-send').removeClass('hidden');
+    });
+
+    socket.on('message', function (data) {
+        let txtTimestamp = moment(data.timestamp).format('MMMM Do YYYY, HH:mm:ss');
+        $('div.main.site-width div.list-group').prepend(`<div class="message-item"> <span class="message-title">${data.username} - ${txtTimestamp}</span><span class="message-content">${data.text}</span></div>`);
+    });
+
+
+    socket.on('history', function (data) {
+        for (let i = 0; i < data.length; i++) {
+            let txtTimestamp = moment(data[i].timestamp).format('MMMM Do YYYY, HH:mm:ss');
+            $('div.main.site-width div.list-group').prepend(`<div class="message-item"> <span class="message-title">${data[i].username} - ${txtTimestamp}</span><span class="message-content">${data[i].text}</span></div>`);
         }
     });
 
