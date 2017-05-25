@@ -1,5 +1,7 @@
 # chat-application
 
+![](http://jenkins.developersworkspace.co.za:8080/job/chat-application-nightly/badge/icon)
+
 ## Getting Started
 
 Clone the repository
