@@ -8,6 +8,6 @@ export class MessageRepository {
     }
 
     public list(id: string): Promise<Message[]> {
-        return null;
+        return Promise.resolve([]);
     }
 }

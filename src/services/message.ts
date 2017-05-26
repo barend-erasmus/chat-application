@@ -16,7 +16,7 @@ export class MessageService {
     public create(id: string, username: string, text: string): Promise<Message> {
         const self = this;
 
-        return co(function* () {
+        return co(function*() {
 
             const message = new Message(id, username, text, new Date().getTime());
 
