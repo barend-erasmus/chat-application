@@ -22,6 +22,9 @@ Start project
 
 Browse `http://localhost:3000`
 
-## Installing for production
+## Docker Setup
 
-`curl -s https://raw.githubusercontent.com/barend-erasmus/chat-application/master/install.sh | bash -s "yourdomain.com" yourport`
+`docker run --name chat-application-db -v /opt/chat-application/mongodb:/data/db -d mongo`
+
+`docker run -d -p 8080:3000 --name chat-application --link chat-application-db:mongo -t chat-application`
+

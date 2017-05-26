@@ -1,3 +1,7 @@
+// Imports models
+import { Message } from './../models/message';
+
 export interface IMessageRepository {
-    create(): any;
+    create(message: Message): Promise<boolean>;
+    list(id: string): Promise<Message[]>;
 }

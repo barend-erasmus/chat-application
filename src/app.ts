@@ -7,6 +7,9 @@ import * as uuid from 'uuid';
 // Imports services
 import { MessageService } from './services/message';
 
+// Imports repositories
+import { MessageRepository } from './repositories/mongo/message';
+
 // Import configurations
 import { config } from './config';
 
@@ -35,14 +38,16 @@ function createNewNamespace(id: string) {
 
   namespace.on('connection', (socket) => {
     socket.on('message', (data) => {
-      const messageService = new MessageService(config.db.uri);
+      const messageRepository = new MessageRepository(config.db.uri)
+      const messageService = new MessageService(messageRepository);
       messageService.create(id, data.username, data.text).then((x) => {
         namespace.emit('message', x);
       });
     });
 
     socket.on('history', (data) => {
-      const messageService = new MessageService(config.db.uri);
+      const messageRepository = new MessageRepository(config.db.uri)
+      const messageService = new MessageService(messageRepository);
       messageService.list(id).then((x) => {
         socket.emit('history', x);
       });
