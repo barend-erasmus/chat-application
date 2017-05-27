@@ -26,7 +26,7 @@ Browse `http://localhost:3000`
 
 `docker run --name chat-application-db -v /opt/chat-application/mongodb:/data/db -d mongo`
 
-``docker build --no-cache -t chat-application ./``
+`docker build --no-cache -t chat-application ./`
 
 `docker run -d -p 8080:3000 --name chat-application -v /opt/chat-application:/opt/chat-application --link chat-application-db:mongo -t chat-application`
 
