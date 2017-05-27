@@ -3,7 +3,9 @@ var gulp = require('gulp');
 var clean = require('gulp-clean');
 var ts = require('gulp-typescript');
 var rename = require("gulp-rename");
+var GulpSSH = require('gulp-ssh');
 var sequence = require('run-sequence');
+var argv = require('yargs').argv;
 
 // Compiles typescript files
 gulp.task('compile:ts', function () {
@@ -44,6 +46,7 @@ gulp.task('rename:config', function () {
         .pipe(gulp.dest('./dist'));
 });
 
+
 gulp.task('build', function (done) {
     sequence('clean', 'compile:ts', 'copy:package.json', 'copy:index.html', 'rename:config', done);
 });
@@ -51,3 +54,21 @@ gulp.task('build', function (done) {
 gulp.task('build:dev', function (done) {
     sequence('clean', 'compile:ts', 'copy:package.json', 'copy:index.html', done);
 });
+
+gulp.task('publish', function () {
+    var config = {
+        host: argv.host,
+        port: 22,
+        username: argv.username,
+        password: argv.password
+    };
+
+    var gulpSSH = new GulpSSH({
+        ignoreErrors: false,
+        sshConfig: config
+    });
+
+    return gulp
+        .src(['./dist/**'])
+        .pipe(gulpSSH.dest(argv.dest));
+})
