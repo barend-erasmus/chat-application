@@ -72,7 +72,7 @@ gulp.task('publish:source', function () {
 
     return gulp
         .src(['./dist/**'])
-        .pipe(gulpSSH.dest(argv.dest));
+        .pipe(gulpSSH.dest(`/opt/${argv.service}`));
 });
 
 gulp.task('publish:modules', function (done) {
@@ -110,7 +110,7 @@ gulp.task('publish:dockerfile', function () {
 
     return gulp
         .src(['./Dockerfile'])
-        .pipe(gulpSSH.dest(argv.dest));
+        .pipe(gulpSSH.dest(`/docker-uploads/${argv.service}`));
 });
 
 gulp.task('docker:stop', function (done) {
@@ -143,7 +143,7 @@ gulp.task('docker:build', function (done) {
         password: argv.password
     }).then(function () {
         ssh.execCommand(`docker build --no-cache -t ${argv.service} /opt/${argv.service}`).then(function (result) {
-            return ssh.execCommand(`docker run -d -p 8080:3000 --name ${argv.service} -v /logs:/logs -v /opt/${argv.service}:/opt/${argv.service} --link feature-toggle-db:mongo -t ${argv.service}`);
+            return ssh.execCommand(`docker run -d -p 8080:3000 --name ${argv.service} -v /logs:/logs -v /opt/${argv.service}:/opt/${argv.service} --link chat-application-db:mongo -t ${argv.service}`);
         }).then(function (result) {
             ssh.dispose();
             done();
