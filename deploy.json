@@ -1,0 +1,33 @@
+{
+    "machine": {
+        "host": "$host",
+        "username": "$username",
+        "password": "$password"
+    },
+    "commands": [
+        "sudo apt-get update",
+        "curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -",
+        "sudo apt-get install -y nodejs",
+
+        "npm --prefix /opt/chat-application install",
+        "docker stop chat-application",
+        "docker rm chat-application",
+        "docker stop chat-application-db",
+        "docker rm chat-application-db",
+        "docker build --no-cache -t chat-application /docker-uploads/chat-application",
+        "docker run --name chat-application-db -d mongo",
+        "docker run -d -p 8080:3000 --name chat-application -v /logs:/logs -v /opt/chat-application:/opt/chat-application --link chat-application-db:mongo -t chat-application"
+    ],
+    "directories": [
+        {
+            "source": "$workspace/dist",
+            "destination": "/opt/world-of-rations-service"
+        }
+    ],
+    "files": [
+        {
+            "source": "$workspace/Dockerfile",
+            "destination": "/docker-uploads/world-of-rations-service/Dockerfile"
+        }
+    ]
+}
