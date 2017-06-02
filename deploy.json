@@ -20,14 +20,18 @@
     ],
     "directories": [
         {
-            "source": "$workspace/dist",
-            "destination": "/opt/world-of-rations-service"
+            "source": "$workspace/src",
+            "destination": "/opt/chat-application/src"
         }
     ],
     "files": [
         {
+            "source": "$workspace/package.json",
+            "destination": "/opt/chat-application/package.json"
+        },
+        {
             "source": "$workspace/Dockerfile",
-            "destination": "/docker-uploads/world-of-rations-service/Dockerfile"
+            "destination": "/docker-uploads/chat-application/Dockerfile"
         }
     ]
 }

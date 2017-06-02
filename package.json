@@ -5,8 +5,8 @@
   "scripts": {
     "build": "gulp build",
     "lint": "tslint --fix --exclude ./src/**/config.* ./src/**/*.ts",
-    "test": "gulp build:dev & mocha --timeout=5000 ./dist/**/*.test.js & gulp clean",
-    "start": "gulp build:dev & node ./dist/app.js"
+    "test": "tsc & mocha --timeout=5000 ./src/**/*.test.js & gulp clean",
+    "start": "tsc & node ./src/app.js"
   },
   "author": "Barend Erasmus",
   "license": "MIT",
@@ -15,7 +15,8 @@
     "express": "^4.15.2",
     "mongodb": "^2.2.26",
     "socket.io": "^1.7.3",
-    "uuid": "^3.0.1"
+    "uuid": "^3.0.1",
+    "yargs": "^8.0.1"
   },
   "devDependencies": {
     "@types/chai": "^3.5.2",
@@ -25,15 +26,9 @@
     "@types/sinon": "^2.2.2",
     "@types/socket.io": "^1.4.29",
     "chai": "^3.5.0",
-    "gulp": "^3.9.1",
-    "gulp-clean": "^0.3.2",
-    "gulp-rename": "^1.2.2",
-    "gulp-typescript": "^3.1.6",
     "mocha": "^3.4.2",
-    "run-sequence": "^1.2.2",
     "sinon": "^2.3.1",
     "tslint": "^5.0.0",
-    "typescript": "^2.2.2",
-    "yargs": "^8.0.1"
+    "typescript": "^2.2.2"
   }
 }

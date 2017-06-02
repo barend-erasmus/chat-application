@@ -11,7 +11,14 @@ import { MessageService } from './services/message';
 import { MessageRepository } from './repositories/mongo/message';
 
 // Import configurations
-import { config } from './config';
+let config = require('./config').config;
+
+let argv = require('yargs').argv;
+
+if (argv.prod) {
+  config = require('./config.prod').config;
+}
+
 
 const app = express();
 const server = http.createServer(app);
@@ -27,7 +34,7 @@ app.get('/chat', (req, res) => {
     createNewNamespace(req.query.id);
   }
 
-  res.sendFile(__dirname + '/public/index.html');
+  res.sendFile( __dirname + '/public/index.html');
 });
 
 socketio = io.listen(app.listen(3000));
