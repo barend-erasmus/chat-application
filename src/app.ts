@@ -44,7 +44,7 @@ function createNewNamespace(id: string) {
 
   namespace.on('connection', (socket) => {
     socket.on('message', (data) => {
-      const messageRepository = new MessageRepository(config.db.uri)
+      const messageRepository = new MessageRepository(config.db.uri);
       const messageService = new MessageService(messageRepository);
       messageService.create(id, data.username, data.text).then((x) => {
         namespace.emit('message', x);
@@ -52,7 +52,7 @@ function createNewNamespace(id: string) {
     });
 
     socket.on('history', (data) => {
-      const messageRepository = new MessageRepository(config.db.uri)
+      const messageRepository = new MessageRepository(config.db.uri);
       const messageService = new MessageService(messageRepository);
       messageService.list(id).then((x) => {
         socket.emit('history', x);
