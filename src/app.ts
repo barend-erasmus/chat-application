@@ -13,12 +13,11 @@ import { MessageRepository } from './repositories/mongo/message';
 // Import configurations
 let config = require('./config').config;
 
-let argv = require('yargs').argv;
+const argv = require('yargs').argv;
 
 if (argv.prod) {
   config = require('./config.prod').config;
 }
-
 
 const app = express();
 const server = http.createServer(app);
