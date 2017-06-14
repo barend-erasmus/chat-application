@@ -3,6 +3,7 @@ import * as express from 'express';
 import * as http from 'http';
 import * as io from 'socket.io';
 import * as uuid from 'uuid';
+import * as rp from 'request-promise';
 
 // Imports services
 import { MessageService } from './services/message';
@@ -25,6 +26,24 @@ let socketio;
 
 app.get('/', (req, res) => {
   const id = uuid.v4();
+
+  const options = {
+    method: 'POST',
+    uri: 'https://hooks.slack.com/services/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',
+    body: {
+      text: `New Chat has started. Please <http://localhost:3000/chat?id=${id}|Click here>.`
+    },
+    json: true
+  };
+
+  rp(options)
+    .then((parsedBody: any) => {
+
+    })
+    .catch((err: Error) => {
+
+    });
+
   res.redirect(`/chat?id=${id}`);
 });
 
@@ -33,7 +52,7 @@ app.get('/chat', (req, res) => {
     createNewNamespace(req.query.id);
   }
 
-  res.sendFile( __dirname + '/public/index.html');
+  res.sendFile(__dirname + '/public/index.html');
 });
 
 socketio = io.listen(app.listen(3000));
