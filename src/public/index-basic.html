@@ -16,6 +16,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    
+    <link href="/static/css/styles.css" rel="stylesheet">
 
     <style>
         body {
@@ -73,6 +75,12 @@
             </ul>
         </div>
     </div>
+    <footer class="footer">
+        <div class="container">
+            <span class="text-muted">&copy; 2017 Chat Application. All rights reserved.</span>
+            <a href="/api/coverage" target="_blank" class="pull-right">Coverage Report</a>
+        </div>
+    </footer>
 </body>
 <script>
     $('div.starter-template ul.list-group').prepend(`<li class="list-group-item"><b>Bot</b>&nbsp;&nbsp;Share this, <a target="_blank" href="${window.location}">${window.location}</a>, link with other members to join<br /></li>`);

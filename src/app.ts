@@ -10,7 +10,8 @@ import * as yargs from 'yargs';
 import { MessageService } from './services/message';
 
 // Imports repositories
-import { MessageRepository } from './repositories/mongo/message';
+// import { MessageRepository } from './repositories/mongo/message';
+import { MessageRepository } from './repositories/sequelize/message';
 
 const argv = yargs.argv;
 
@@ -19,6 +20,7 @@ const server = http.createServer(app);
 let socketio;
 
 app.use('/api/coverage', express.static(path.join(__dirname, './../coverage/lcov-report')));
+app.use('/static', express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => {
   const id = uuid.v4();
@@ -41,7 +43,8 @@ function createNewNamespace(id: string) {
 
   namespace.on('connection', (socket) => {
     socket.on('message', (data) => {
-      const messageRepository = new MessageRepository('mongodb://localhost:27017/chat-application');
+      // const messageRepository = new MessageRepository('mongodb://localhost:27017/chat-application');
+      const messageRepository = new MessageRepository('developersworkspace.co.za', 'chat-application', 'eiZEocoCqNYduncWnVyS');
       const messageService = new MessageService(messageRepository);
       messageService.create(id, data.username, data.text).then((x) => {
         namespace.emit('message', x);
@@ -49,7 +52,8 @@ function createNewNamespace(id: string) {
     });
 
     socket.on('history', (data) => {
-      const messageRepository = new MessageRepository('mongodb://localhost:27017/chat-application');
+      // const messageRepository = new MessageRepository('mongodb://localhost:27017/chat-application');
+      const messageRepository = new MessageRepository('developersworkspace.co.za', 'chat-application', 'eiZEocoCqNYduncWnVyS');
       const messageService = new MessageService(messageRepository);
       messageService.list(id).then((x) => {
         socket.emit('history', x);
