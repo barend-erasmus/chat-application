@@ -1,8 +1,10 @@
 // Imports
 import * as express from 'express';
 import * as http from 'http';
+import * as path from 'path';
 import * as io from 'socket.io';
 import * as uuid from 'uuid';
+import * as yargs from 'yargs';
 
 // Imports services
 import { MessageService } from './services/message';
@@ -10,18 +12,13 @@ import { MessageService } from './services/message';
 // Imports repositories
 import { MessageRepository } from './repositories/mongo/message';
 
-// Import configurations
-let config = require('./config').config;
-
-const argv = require('yargs').argv;
-
-if (argv.prod) {
-  config = require('./config.prod').config;
-}
+const argv = yargs.argv;
 
 const app = express();
 const server = http.createServer(app);
 let socketio;
+
+app.use('/api/coverage', express.static(path.join(__dirname, './../coverage/lcov-report')));
 
 app.get('/', (req, res) => {
   const id = uuid.v4();
@@ -33,10 +30,10 @@ app.get('/chat', (req, res) => {
     createNewNamespace(req.query.id);
   }
 
-  res.sendFile( __dirname + '/public/index.html');
+  res.sendFile( __dirname + '/public/index-basic.html');
 });
 
-socketio = io.listen(app.listen(3000));
+socketio = io.listen(app.listen(argv.port || 3000));
 
 function createNewNamespace(id: string) {
 
@@ -44,7 +41,7 @@ function createNewNamespace(id: string) {
 
   namespace.on('connection', (socket) => {
     socket.on('message', (data) => {
-      const messageRepository = new MessageRepository(config.db.uri);
+      const messageRepository = new MessageRepository('mongodb://localhost:27017/chat-application');
       const messageService = new MessageService(messageRepository);
       messageService.create(id, data.username, data.text).then((x) => {
         namespace.emit('message', x);
@@ -52,7 +49,7 @@ function createNewNamespace(id: string) {
     });
 
     socket.on('history', (data) => {
-      const messageRepository = new MessageRepository(config.db.uri);
+      const messageRepository = new MessageRepository('mongodb://localhost:27017/chat-application');
       const messageService = new MessageService(messageRepository);
       messageService.list(id).then((x) => {
         socket.emit('history', x);

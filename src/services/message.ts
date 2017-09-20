@@ -1,6 +1,3 @@
-// Imports
-import * as co from 'co';
-
 // Imports models
 import { Message } from './../models/message';
 
@@ -13,20 +10,16 @@ export class MessageService {
 
     }
 
-    public create(id: string, username: string, text: string): Promise<Message> {
-        const self = this;
+    public async create(id: string, username: string, text: string): Promise<Message> {
 
-        return co(function*() {
+        const message = new Message(id, username, text, new Date().getTime());
 
-            const message = new Message(id, username, text, new Date().getTime());
+        const result: boolean = await this.messageRepository.create(message);
 
-            const result: boolean = yield self.messageRepository.create(message);
-
-            return message;
-        });
+        return message;
     }
 
-    public list(id: string): Promise<Message[]> {
+    public async list(id: string): Promise<Message[]> {
         return this.messageRepository.list(id);
     }
 }

@@ -1,5 +1,4 @@
 // Imports
-import * as co from 'co';
 import * as mongo from 'mongodb';
 
 // Imports models
@@ -11,43 +10,35 @@ export class MessageRepository {
 
     }
 
-    public create(message: Message): Promise<boolean> {
-        const self = this;
+    public async create(message: Message): Promise<boolean> {
 
-        return co(function* () {
+        const db: mongo.Db = await mongo.MongoClient.connect(this.uri);
 
-            const db: mongo.Db = yield mongo.MongoClient.connect(self.uri);
+        const collection: mongo.Collection = db.collection('messages');
 
-            const collection: mongo.Collection = db.collection('messages');
-
-            const result: any = yield collection.insertOne({
-                id: message.id,
-                text: message.text,
-                timestamp: message.timestamp,
-                username: message.username,
-            });
-
-            db.close();
-
-            return message;
+        const result: any = await collection.insertOne({
+            id: message.id,
+            text: message.text,
+            timestamp: message.timestamp,
+            username: message.username,
         });
+
+        db.close();
+
+        return true;
     }
 
-    public list(id: string): Promise<Message[]> {
-        const self = this;
+    public async list(id: string): Promise<Message[]> {
+        const db: mongo.Db = await mongo.MongoClient.connect(this.uri);
 
-        return co(function* () {
-            const db: mongo.Db = yield mongo.MongoClient.connect(self.uri);
+        const collection: mongo.Collection = db.collection('messages');
 
-            const collection: mongo.Collection = db.collection('messages');
+        const messages: any[] = await collection.find({ id }).sort({
+            timestamp: 1,
+        }).limit(50).toArray();
 
-            const messages: any[] = yield collection.find({ id }).sort({
-                timestamp: 1,
-            }).limit(50).toArray();
+        db.close();
 
-            db.close();
-
-            return messages.map((x) => new Message(x.id, x.username, x.text, x.timestamp));
-        });
+        return messages.map((x) => new Message(x.id, x.username, x.text, x.timestamp));
     }
 }

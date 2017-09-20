@@ -1,6 +1,5 @@
 // Imports
 import { expect } from 'chai';
-import * as co from 'co';
 import 'mocha';
 import * as sinon from 'sinon';
 
@@ -28,13 +27,10 @@ describe('MessageService', () => {
             messageService = new MessageService(messageRepository);
         });
 
-        it('should call messageRepository.list', () => {
+        it('should call messageRepository.list', async () => {
+            const result: Message[] = await messageService.list('123');
 
-            return co(function*() {
-                const result: Message[] = yield messageService.list('123');
-
-                expect(messageRepositoryList.calledOnce).to.be.true;
-            });
+            expect(messageRepositoryList.calledOnce).to.be.true;
         });
     });
 
@@ -51,13 +47,10 @@ describe('MessageService', () => {
             messageService = new MessageService(messageRepository);
         });
 
-        it('should call messageRepository.create', () => {
+        it('should call messageRepository.create', async () => {
+            const result: Message = await messageService.create('123', 'demousername', 'Hello World');
 
-            return co(function*() {
-                const result: Message = yield messageService.create('123', 'demousername', 'Hello World');
-
-                expect(messageRepositoryCreate.calledOnce).to.be.true;
-            });
+            expect(messageRepositoryCreate.calledOnce).to.be.true;
         });
     });
 });
