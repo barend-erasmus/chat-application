@@ -144,7 +144,7 @@
         let username = $('#txt-username').val();
 
         socket.emit('message', {
-            text: `<a/ href='${window.location}' target="_blank">${username}</a> has joined.`,
+            text: `<a/ href='${getDomain()}?id=${getParameterByName('id')}' target="_blank">${username}</a> has joined.`,
             username: 'Bot'
         });
     }

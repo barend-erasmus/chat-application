@@ -49,7 +49,7 @@ export class MessageRepository {
 
         const messages: any[] = await collection.find({ username }).sort({
             timestamp: 1,
-        }).limit(50).toArray();
+        }).limit(10).toArray();
 
         db.close();
 
