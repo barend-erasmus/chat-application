@@ -55,19 +55,20 @@
         <div class="starter-template">
             <div class="well">
                 <div class="row" id="form-join">
-                    <div class="col-md-8">
+                    <div class="col-md-10">
                         <input type="text" class="form-control" id="txt-username" placeholder="Enter your username here" />
                     </div>
-                    <div class="col-md-4">
-                        <button class="btn btn-primary form-control" id="btn-join">Join</button>
+                    <div class="col-md-2">
+                        <button class="btn btn-primary" id="btn-join">Join</button>
                     </div>
                 </div>
-                <div class="row hidden" id="form-send">
-                    <div class="col-md-8">
-                        <input type="text" class="form-control" id="txt-message" placeholder="Enter your message here" />
+                <br />
+                <div class="row" id="form-send">
+                    <div class="col-md-10">
+                        <input type="text" disabled class="form-control" id="txt-message" placeholder="Enter your message here" />
                     </div>
-                    <div class="col-md-4">
-                        <button class="btn btn-primary form-control" id="btn-send">Send</button>
+                    <div class="col-md-2">
+                        <button class="btn btn-primary" disabled id="btn-send">Send</button>
                     </div>
                 </div>
             </div>
@@ -123,8 +124,11 @@
     socket.emit('history');
 
     function onJoin() {
-        $('#form-join').addClass('hidden');
-        $('#form-send').removeClass('hidden');
+        $('#txt-message').removeAttr('disabled');
+        $('#btn-send').removeAttr('disabled');
+
+        $('#txt-username').prop('disabled', true);
+        $('#btn-join').prop('disabled', true);
 
         let username = $('#txt-username').val();
 
