@@ -24,7 +24,7 @@ app.use('/static', express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => {
   const id = uuid.v4();
-  res.redirect(`/chat?id=${id}`);
+  res.redirect(`/chat?id=${id}${req.query.username? `&username=${req.query.username}` : ''}`);
 });
 
 app.get('/chat', (req, res) => {
@@ -32,7 +32,7 @@ app.get('/chat', (req, res) => {
     createNewNamespace(req.query.id);
   }
 
-  res.sendFile( __dirname + '/public/index-basic.html');
+  res.sendFile(__dirname + '/public/index-basic.html');
 });
 
 app.get('/feed', (req, res) => {
@@ -40,7 +40,7 @@ app.get('/feed', (req, res) => {
     createUsernameBotNamespace();
   }
 
-  res.sendFile( __dirname + '/public/feed.html');
+  res.sendFile(__dirname + '/public/feed.html');
 });
 
 socketio = io.listen(app.listen(argv.port || 3000));
@@ -79,13 +79,13 @@ function createUsernameBotNamespace() {
   const namespace = socketio.of(`/username-bot`);
 
   namespace.on('connection', (socket) => {
-      socket.on('history', (data) => {
-        // const messageRepository = new MessageRepository('mongodb://localhost:27017/chat-application');
-        const messageRepository = new MessageRepository('developersworkspace.co.za', 'chat-application', 'eiZEocoCqNYduncWnVyS');
-        const messageService = new MessageService(messageRepository);
-        messageService.listByUsername('Bot').then((x) => {
-          socket.emit('history', x);
-        });
+    socket.on('history', (data) => {
+      // const messageRepository = new MessageRepository('mongodb://localhost:27017/chat-application');
+      const messageRepository = new MessageRepository('developersworkspace.co.za', 'chat-application', 'eiZEocoCqNYduncWnVyS');
+      const messageService = new MessageService(messageRepository);
+      messageService.listByUsername('Bot').then((x) => {
+        socket.emit('history', x);
       });
     });
+  });
 }
