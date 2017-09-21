@@ -35,6 +35,14 @@ app.get('/chat', (req, res) => {
   res.sendFile( __dirname + '/public/index-basic.html');
 });
 
+app.get('/feed', (req, res) => {
+  if (socketio.nsps[`/username-bot`] === undefined) {
+    createUsernameBotNamespace();
+  }
+
+  res.sendFile( __dirname + '/public/feed.html');
+});
+
 socketio = io.listen(app.listen(argv.port || 3000));
 
 function createNewNamespace(id: string) {
@@ -48,6 +56,11 @@ function createNewNamespace(id: string) {
       const messageService = new MessageService(messageRepository);
       messageService.create(id, data.username, data.text).then((x) => {
         namespace.emit('message', x);
+
+        if (data.username === 'Bot') {
+          socketio.of(`/username-bot`).emit('message', x);
+        }
+
       });
     });
 
@@ -60,4 +73,19 @@ function createNewNamespace(id: string) {
       });
     });
   });
+}
+
+function createUsernameBotNamespace() {
+  const namespace = socketio.of(`/username-bot`);
+
+  namespace.on('connection', (socket) => {
+      socket.on('history', (data) => {
+        // const messageRepository = new MessageRepository('mongodb://localhost:27017/chat-application');
+        const messageRepository = new MessageRepository('developersworkspace.co.za', 'chat-application', 'eiZEocoCqNYduncWnVyS');
+        const messageService = new MessageService(messageRepository);
+        messageService.listByUsername('Bot').then((x) => {
+          socket.emit('history', x);
+        });
+      });
+    });
 }

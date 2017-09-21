@@ -10,4 +10,8 @@ export class MessageRepository {
     public list(id: string): Promise<Message[]> {
         return Promise.resolve([]);
     }
+
+    public listByUsername(id: string): Promise<Message[]> {
+        return Promise.resolve([]);
+    }
 }

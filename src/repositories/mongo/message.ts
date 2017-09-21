@@ -41,4 +41,18 @@ export class MessageRepository {
 
         return messages.map((x) => new Message(x.id, x.username, x.text, x.timestamp));
     }
+
+    public async listByUsername(username: string): Promise<Message[]> {
+        const db: mongo.Db = await mongo.MongoClient.connect(this.uri);
+
+        const collection: mongo.Collection = db.collection('messages');
+
+        const messages: any[] = await collection.find({ username }).sort({
+            timestamp: 1,
+        }).limit(50).toArray();
+
+        db.close();
+
+        return messages.map((x) => new Message(x.id, x.username, x.text, x.timestamp));
+    }
 }

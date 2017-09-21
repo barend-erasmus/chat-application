@@ -16,7 +16,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
-
+    
     <link href="/static/css/styles.css" rel="stylesheet">
 
     <style>
@@ -53,24 +53,6 @@
     </nav>
     <div class="container">
         <div class="starter-template">
-            <div class="well">
-                <div class="row" id="form-join">
-                    <div class="col-md-8">
-                        <input type="text" class="form-control" id="txt-username" placeholder="Enter your username here" />
-                    </div>
-                    <div class="col-md-4">
-                        <button class="btn btn-primary form-control" id="btn-join">Join</button>
-                    </div>
-                </div>
-                <div class="row hidden" id="form-send">
-                    <div class="col-md-8">
-                        <input type="text" class="form-control" id="txt-message" placeholder="Enter your message here" />
-                    </div>
-                    <div class="col-md-4">
-                        <button class="btn btn-primary form-control" id="btn-send">Send</button>
-                    </div>
-                </div>
-            </div>
             <ul class="list-group">
             </ul>
         </div>
@@ -83,33 +65,13 @@
     </footer>
 </body>
 <script>
-    $('div.starter-template ul.list-group').prepend(`<li class="list-group-item"><b>Bot</b>&nbsp;&nbsp;Share this, <a target="_blank" href="${window.location}">${window.location}</a>, link with other members to join<br /></li>`);
-
-    let socket = io.connect(`/id-${getParameterByName('id')}`);
-
-    $('#btn-send').click(onSend);
-
-    $('#btn-join').click(onJoin);
-
-    $('#txt-message').on('keyup', function (e) {
-        if (e.keyCode == 13) {
-            onSend();
-        }
-    });
-
-    $('#txt-username').on('keyup', function (e) {
-        if (e.keyCode == 13) {
-            onJoin();
-        }
-    });
+    let socket = io.connect(`/username-bot`);
 
     socket.on('message', function (data) {
         let txtTimestamp = moment(data.timestamp).format('MMMM Do YYYY, HH:mm:ss');
         $('div.starter-template ul.list-group').prepend(`<li class="list-group-item"><b>${data.username}</b>&nbsp;&nbsp;${data.text}<br />${txtTimestamp}</li>`);
-        
-        if (data.username !== $('#txt-username').val()) {
-            showNotification(data.text);
-        }
+
+        showNotification(data.text);
     });
 
 
@@ -121,37 +83,6 @@
     });
 
     socket.emit('history');
-
-    function onJoin() {
-        $('#form-join').addClass('hidden');
-        $('#form-send').removeClass('hidden');
-
-        let username = $('#txt-username').val();
-
-        socket.emit('message', {
-            text: `<a/ href='${window.location}' target="_blank">${username}</a> has joined.`,
-            username: 'Bot'
-        });
-    }
-
-    function onSend() {
-        socket.emit('message', {
-            text: $('#txt-message').val(),
-            username: $('#txt-username').val()
-        });
-        $('#txt-message').val('');
-    }
-
-    function getParameterByName(name, url) {
-        if (!url) url = window.location.href;
-        name = name.replace(/[\[\]]/g, "\\$&");
-        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-            results = regex.exec(url);
-        if (!results) return null;
-        if (!results[2]) return '';
-        return decodeURIComponent(results[2].replace(/\+/g, " "));
-    }
-
 
     function showNotification(message) {
         message = message.replace(/<\/?[^>]+(>|$)/g, "");

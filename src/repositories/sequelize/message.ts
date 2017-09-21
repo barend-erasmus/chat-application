@@ -23,11 +23,20 @@ export class MessageRepository extends BaseRepository implements IMessageReposit
         return true;
     }
 
-
     public async list(id: string): Promise<Message[]> {
         const messages: any[] = await BaseRepository.models.Message.findAll({
             where: {
                 chatId: id,
+            },
+        });
+
+        return messages.map((x) => new Message(x.chatId, x.username, x.text, x.timestamp));
+    }
+
+    public async listByUsername(username: string): Promise<Message[]> {
+        const messages: any[] = await BaseRepository.models.Message.findAll({
+            where: {
+                username,
             },
         });
 

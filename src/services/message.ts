@@ -22,4 +22,8 @@ export class MessageService {
     public async list(id: string): Promise<Message[]> {
         return this.messageRepository.list(id);
     }
+
+    public async listByUsername(username: string): Promise<Message[]> {
+        return this.messageRepository.listByUsername(username);
+    }
 }
